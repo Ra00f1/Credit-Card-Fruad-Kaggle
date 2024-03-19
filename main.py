@@ -92,16 +92,16 @@ def Preprocessing(data):
     data.insert(0, 'Scaled Time', scaled_time)
     data.insert(1, 'Scaled Amount', scaled_amount)
 
-    X_train, X_test, y_train, y_test = train_test_split(data.iloc[:, :-1], data.iloc[:, -1], test_size=0.2, random_state=42)
-    print("X_train shape: ", X_train.shape)
-    print("X_test shape: ", X_test.shape)
-    print("y_train shape: ", y_train.shape)
-    print("y_test shape: ", y_test.shape)
-
-    print(X_train.head())
-    print(X_test.head())
-    print(y_train.head())
-    print(y_test.head())
+    X_train, X_test, y_train, y_test = train_test_split(data.iloc[:, :-1], data.iloc[:, -1], test_size=0.2, random_state=42, stratify=data.iloc[:, -1])
+    # print("X_train shape: ", X_train.shape)
+    # print("X_test shape: ", X_test.shape)
+    # print("y_train shape: ", y_train.shape)
+    # print("y_test shape: ", y_test.shape)
+    #
+    # print(X_train.head())
+    # print(X_test.head())
+    # print(y_train.head())
+    # print(y_test.head())
     print("---------------------------------------------------------------------------------")
 
     return X_train, X_test, y_train, y_test
@@ -182,9 +182,10 @@ def Machine_Learning(_train, X_test, y_train, y_test):
     # Theil_reg_score = Theil_reg.score(X_test, y_test)
     # print("Theil Testing Accuracy: ", Theil_reg_score)
 
-    models = [log_reg, Decision_tree, lin_reg, Sgd_reg, Ridge_reg, Lasso_reg, Elastic_reg, Huber_reg, Ransac_reg]
+    models = [log_reg, Decision_tree, knn, lin_reg, Sgd_reg, Ridge_reg, Lasso_reg, Elastic_reg, Huber_reg, Ransac_reg]
     scores = [log_reg_score,
               Decision_tree_score,
+              knn_score,
               lin_reg_score,
               Sgd_reg_score,
               Ridge_reg_score,
@@ -198,10 +199,28 @@ def Machine_Learning(_train, X_test, y_train, y_test):
     return models, scores
 
 
+def KNN_Model(X_train, X_test, y_train, y_test):
+    print("KNN Model")
+    print("=====================================")
+
+    knn = KNeighborsClassifier(n_neighbors=5, metric='euclidean')
+    knn.fit(X_train, y_train)
+    knn_score = knn.score(X_test, y_test)
+    print("KNN Testing Accuracy: ", knn_score)
+    print("KNN Classification Report: ")
+    print(classification_report(y_test, knn.predict(X_test)))
+    print("=====================================")
+
+    print("---------------------------------------------------------------------------------")
+
+    return knn, knn_score
+
+
 if __name__ == '__main__':
     data = read_csv('Data/creditcard.csv')
     # Data_Summary(data)
     # Visualize_Data(data)
     X_train, X_test, y_train, y_test = Preprocessing(data)
 
-    models, scores = Machine_Learning(X_train, X_test, y_train, y_test)
+    # models, scores = Machine_Learning(X_train, X_test, y_train, y_test)
+    knn, knn_score = KNN_Model(X_train, X_test, y_train, y_test)
