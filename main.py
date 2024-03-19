@@ -4,6 +4,7 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
 import sklearn.linear_model as lm
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import classification_report
@@ -125,6 +126,12 @@ def Machine_Learning(_train, X_test, y_train, y_test):
     print("Decision Tree Testing Accuracy: ", Decision_tree_score)
     print("Decision Tree Classification Report: ")
     print(classification_report(y_test, Decision_tree.predict(X_test)))
+    print("=====================================")
+
+    knn = KNeighborsClassifier(n_neighbors=5)
+    knn.fit(X_train, y_train)
+    knn_score = knn.score(X_test, y_test)
+    print("KNN Testing Accuracy: ", knn_score)
     print("=====================================")
 
     lin_reg = lm.LinearRegression()
